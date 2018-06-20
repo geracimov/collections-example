@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -13,22 +12,10 @@ import java.util.function.Consumer;
  * Подсчитайте количество различных слов в файле.
  */
 public class Counter1DifferentWords {
-    private static final String REGEXP_SPLIT_STRING = "[\b ,.;:()\r\n\t\\[\\]—]";
-
-    private static Iterator<String> reverseIterator = new Iterator<String>() {
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public String next() {
-            return null;
-        }
-    };
+    private static final String REGEXP_SPLIT_STRING = "[\b ,.;:()\\r\\n\\t\\[\\]—\\d[0-9]]";
 
     private static List<String> getWords(String lines) {
-        return Arrays.asList(lines.split(REGEXP_SPLIT_STRING));
+        return Arrays.asList(lines.toLowerCase().split(REGEXP_SPLIT_STRING));
     }
 
     private static Set<String> getUniqWords(List<String> list) {
@@ -45,16 +32,23 @@ public class Counter1DifferentWords {
                 + " -----------------------------------------------------------------------");
     }
 
+    /**
+     * Задание 1: Подсчитайте количество различных слов в файле.
+     */
     public static void printCountWords(Set<String> words) {
-        //Задание 1: Подсчитайте количество различных слов в файле.
         printHeaderString();
         System.out.println("Количество слов в списке: " + words.size());
     }
 
-    public static void printUniqWords(Set<String> words) {
-        //Задание 2: Выведите на экран список различных слов файла, отсортированный по возрастанию их длины.
+    /**
+     * Задание 2: Выведите на экран список различных слов файла, отсортированный по возрастанию их длины.
+     */
+    public static void printWords(Set<String> words) {
         Comparator<String> comparator = (o1, o2) -> {
-            int ret;
+            int ret = 0;
+            // если включить проверку на равенство ниже, то получим список слов с уникальной длинной,
+            // в противном случае получаем список всех строк из вх множества words, отсортированных по длинне строки
+            //if (o1.length() != o2.length())
             ret = o1.length() > o2.length() ? 1 : -1;
             return ret;
         };
@@ -69,8 +63,10 @@ public class Counter1DifferentWords {
         }
     }
 
+    /**
+     * Задание 3: Подсчитайте и выведите на экран сколько раз каждое слово встречается в файле.
+     */
     public static void printWordsFrequency(List<String> words) {
-        //Задание 3: Подсчитайте и выведите на экран сколько раз каждое слово встречается в файле.
         HashMap<String, Integer> wc = new HashMap<>();
         for (String word : words) {
             wc.put(word, wc.containsKey(word) ? wc.get(word) + 1 : 1);
@@ -83,28 +79,75 @@ public class Counter1DifferentWords {
     }
 
 
-    public static void printLinesReverse(String lines) {
-        //Задание 4: Выведите на экран все строки файла в обратном порядке.
-        List<String> list = Arrays.asList(lines.split("\n"));
-        Collections.reverse(list);
+    /**
+     * Задание 4: Выведите на экран все строки файла в обратном порядке.
+     */
+    public static void printLinesReverse(List<String> strings) {
+        Collections.reverse(strings);
 
         printHeaderString();
-        for (String s : list) {
+        for (String s : strings) {
             System.out.println(s);
+        }
+    }
+
+    /**
+     * Задание 5: Реализуйте свой Iterator для обхода списка cлов в обратном порядке.
+     */
+    public static class ReverseList<T> implements Iterable<T> {
+        private List<T> innerlist;
+        private int current;
+
+        public ReverseList(List<T> list) {
+            this.innerlist = list;
+            this.current = list.size() - 1;
+        }
+
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                @Override
+                public boolean hasNext() {
+                    return -1 < current;
+                }
+
+                @Override
+                public T next() {
+                    return innerlist.get(current--);
+                }
+            };
+        }
+    }
+
+    public static void printReverseList(List<String> list) {
+        ReverseList<String> rlist = new ReverseList<>(list);
+        for (String s : rlist) {
+            System.out.println(s);
+        }
+    }
+
+    /**
+     * Задание 6: Выведите на экран строки, номера которых задаются пользователем в произвольном порядке.
+     */
+    public static void printSpecificLines(List<String> strings, int[] numlines) {
+        printHeaderString();
+        for (int i :
+                numlines) {
+            System.out.println(strings.get(i));
         }
     }
 
     public static void main(String[] args) throws IOException {
         InputStream resourceAsStream = Counter1DifferentWords.class.getResourceAsStream("/ru/sbt/collections/VeryBigText.txt");
         String lines = IOUtils.toString(resourceAsStream, "UTF8");
+        List<String> strings = Arrays.asList(lines.split("\n"));
         List<String> words = getWords(lines);
         Set<String> uniqWordswords = getUniqWords(words);
 
-
         printCountWords(uniqWordswords);
-        printUniqWords(uniqWordswords);
+        printWords(uniqWordswords);
         printWordsFrequency(words);
-        printLinesReverse(lines);
-
+        printLinesReverse(strings);
+        printReverseList(words);
+        printSpecificLines(strings, new int[]{0, 2, 4, 6, 8});
     }
 }
