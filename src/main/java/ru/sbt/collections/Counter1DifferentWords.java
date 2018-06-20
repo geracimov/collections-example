@@ -6,7 +6,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * Подсчитайте количество различных слов в файле.
