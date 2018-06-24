@@ -11,69 +11,71 @@ import java.util.*;
  * Подсчитайте количество различных слов в файле.
  */
 public class Counter1DifferentWords {
-    private static final String REGEXP_SPLIT_STRING = "[\b ,.;:()\\r\\n\\t\\[\\]—\\d[0-9]]";
+    private static final String REGEXP_SPLIT_LINE = "\n";
+    private static final String REGEXP_SPLIT_STRING = "[\b ,.;:()«»\\r\\n\\t\\[\\]—\\d[0-9]]";
 
-    private static List<String> getWords(String lines) {
-        return Arrays.asList(lines.toLowerCase().split(REGEXP_SPLIT_STRING));
+    private static List<String> getLines( String lines ) {
+        return Arrays.asList( lines.split( REGEXP_SPLIT_LINE ) );
     }
 
-    private static Set<String> getUniqWords(List<String> list) {
-        Set<String> resultSet = new HashSet<>();
-        String[] arr = new String[list.size()];
-        arr = list.toArray(arr);
-        Collections.addAll(resultSet, arr);
-        resultSet.remove("");
+    private static List<String> getWords( String lines ) {
+        return Arrays.asList( lines.toLowerCase( ).split( REGEXP_SPLIT_STRING, -1 ) );
+    }
+
+    private static Set<String> getUniqWords( List<String> list ) {
+        Set<String> resultSet = new HashSet<>( list );
+        resultSet.remove( "" );
         return resultSet;
     }
 
-    private static void printHeaderString() {
-        System.out.println("--- " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                + " -----------------------------------------------------------------------");
+    private static void printHeaderString( ) {
+        System.out.println( "--- " + Thread.currentThread( ).getStackTrace( )[2].getMethodName( )
+                + " -----------------------------------------------------------------------" );
     }
 
     /**
      * Задание 1: Подсчитайте количество различных слов в файле.
      */
-    public static void printCountWords(Set<String> words) {
-        printHeaderString();
-        System.out.println("Количество слов в списке: " + words.size());
+    public static void printCountWords( String lines ) {
+        if ( lines == null ) return;
+        printHeaderString( );
+        System.out.println( "Количество слов в списке: " + getWords( lines ).size( ) );
     }
 
     /**
      * Задание 2: Выведите на экран список различных слов файла, отсортированный по возрастанию их длины.
      */
-    public static void printWords(Set<String> words) {
-        Comparator<String> comparator = (o1, o2) -> {
-            int ret = 0;
-            // если включить проверку на равенство ниже, то получим список слов с уникальной длинной,
-            // в противном случае получаем список всех строк из вх множества words, отсортированных по длинне строки
-            //if (o1.length() != o2.length())
-            ret = o1.length() > o2.length() ? 1 : -1;
+    public static void printWords( String lines ) {
+        if ( lines == null ) return;
+        Comparator<String> comparator = ( o1, o2 ) -> {
+            int ret = o1.length( ) > o2.length( ) ? 1 : -1;
             return ret;
         };
 
-        TreeSet<String> ts = new TreeSet<>(comparator);
-        ts.addAll(words);
+        TreeSet<String> ts = new TreeSet<>( comparator );
+        ts.addAll( getUniqWords( getWords( lines ) ) );
 
-        printHeaderString();
-        for (String wo :
-                ts) {
-            System.out.println(wo);
+        printHeaderString( );
+        for ( String wo :
+                ts ) {
+            System.out.println( wo );
         }
     }
 
     /**
      * Задание 3: Подсчитайте и выведите на экран сколько раз каждое слово встречается в файле.
      */
-    public static void printWordsFrequency(List<String> words) {
-        HashMap<String, Integer> wc = new HashMap<>();
-        for (String word : words) {
-            wc.put(word, wc.containsKey(word) ? wc.get(word) + 1 : 1);
+    public static void printWordsFrequency( String lines ) {
+        if ( lines == null ) return;
+        HashMap<String, Integer> wc = new HashMap<>( );
+        for ( String word : getWords( lines ) ) {
+//            wc.put(word, wc.containsKey(word) ? wc.get(word) + 1 : 1);
+            wc.merge( word, 1, Integer::sum );
         }
 
-        printHeaderString();
-        for (Map.Entry<String, Integer> pair : wc.entrySet()) {
-            System.out.println(pair.getKey() + " " + pair.getValue());
+        printHeaderString( );
+        for ( Map.Entry<String, Integer> pair : wc.entrySet( ) ) {
+            System.out.println( pair.getKey( ) + " " + pair.getValue( ) );
         }
     }
 
@@ -81,12 +83,14 @@ public class Counter1DifferentWords {
     /**
      * Задание 4: Выведите на экран все строки файла в обратном порядке.
      */
-    public static void printLinesReverse(List<String> strings) {
-        Collections.reverse(strings);
+    public static void printLinesReverse( String lines ) {
+        if ( lines == null ) return;
+        List<String> strings = Arrays.asList( lines.split( "\n" ) );
+        Collections.reverse( strings );
 
-        printHeaderString();
-        for (String s : strings) {
-            System.out.println(s);
+        printHeaderString( );
+        for ( String s : strings ) {
+            System.out.println( s );
         }
     }
 
@@ -97,56 +101,60 @@ public class Counter1DifferentWords {
         private List<T> innerlist;
         private int current;
 
-        public ReverseList(List<T> list) {
+        public ReverseList( List<T> list ) {
             this.innerlist = list;
-            this.current = list.size() - 1;
+            this.current = list.size( ) - 1;
         }
 
-        public Iterator<T> iterator() {
-            return new Iterator<T>() {
+        public Iterator<T> iterator( ) {
+            return new Iterator<T>( ) {
                 @Override
-                public boolean hasNext() {
+                public boolean hasNext( ) {
                     return -1 < current;
                 }
 
                 @Override
-                public T next() {
-                    return innerlist.get(current--);
+                public T next( ) {
+                    return innerlist.get( current-- );
                 }
             };
         }
     }
 
-    public static void printReverseList(List<String> list) {
-        ReverseList<String> rlist = new ReverseList<>(list);
-        for (String s : rlist) {
-            System.out.println(s);
+    public static void printReverseList( String lines ) {
+        if ( lines == null ) return;
+
+        ReverseList<String> rlist = new ReverseList<>( getWords( lines ) );
+
+        printHeaderString( );
+        for ( String s : rlist ) {
+            System.out.println( s );
         }
     }
 
     /**
      * Задание 6: Выведите на экран строки, номера которых задаются пользователем в произвольном порядке.
      */
-    public static void printSpecificLines(List<String> strings, int[] numlines) {
-        printHeaderString();
-        for (int i :
-                numlines) {
-            System.out.println(strings.get(i));
+    public static void printSpecificLines( String lines, int[] numLines ) {
+        if ( lines == null || numLines == null ) return;
+
+        printHeaderString( );
+        for ( int i :
+                numLines ) {
+            System.out.println( getLines( lines ).get( i ) );
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        InputStream resourceAsStream = Counter1DifferentWords.class.getResourceAsStream("/ru/sbt/collections/VeryBigText.txt");
-        String lines = IOUtils.toString(resourceAsStream, "UTF8");
-        List<String> strings = Arrays.asList(lines.split("\n"));
-        List<String> words = getWords(lines);
-        Set<String> uniqWordswords = getUniqWords(words);
+    public static void main( String[] args ) throws IOException {
+        InputStream resourceAsStream = Counter1DifferentWords.class.getResourceAsStream( "/ru/sbt/collections/VeryBigText.txt" );
+        String lines = IOUtils.toString( resourceAsStream, "UTF8" );
+        resourceAsStream.close( );
 
-        printCountWords(uniqWordswords);
-        printWords(uniqWordswords);
-        printWordsFrequency(words);
-        printLinesReverse(strings);
-        printReverseList(words);
-        printSpecificLines(strings, new int[]{0, 2, 4, 6, 8});
+        printCountWords( lines );
+        printWords( lines );
+        printWordsFrequency( lines );
+        printLinesReverse( lines );
+        printReverseList( lines );
+        printSpecificLines( lines, new int[]{ 0, 2, 4, 6, 8 } );
     }
 }
