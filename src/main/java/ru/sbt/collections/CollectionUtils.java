@@ -34,10 +34,10 @@ class Doge extends Pet {
 public class CollectionUtils {
 
     public static void main( String[] args ) {
-        List<Kitty> src = new ArrayList<>( Arrays.asList( new Kitty( ), new Kitty( ) ) );
-        Pet p = new Pet( );
+        List<Kitty> src = new ArrayList<>( Arrays.asList( new Kitty(), new Kitty() ) );
+        Pet p = new Pet();
         p.setName( "init" );
-        List<Pet> dest = new ArrayList<>( Arrays.asList( new Pet( ), p, new Pet( ) ) );
+        List<Pet> dest = new ArrayList<>( Arrays.asList( new Pet(), p, new Pet() ) );
 
         addAll( src, dest );
         List<Pet> dest2 = (List<Pet>) newArrayList( dest );
@@ -53,7 +53,7 @@ public class CollectionUtils {
         removeAll( dest3, dest );
 
         System.out.println( containsAll( dest3, new ArrayList<Pet>( Arrays.asList( p ) ) ) );
-        System.out.println( containsAny( dest3, new ArrayList<Pet>( Arrays.asList( new Pet( ), p ) ) ) );
+        System.out.println( containsAny( dest3, new ArrayList<Pet>( Arrays.asList( new Pet(), p ) ) ) );
         Comparator<? super Integer> comp = ( o1, o2 ) -> {
             if ( o1 == null && o2 == null ) {
                 return 0;
@@ -67,10 +67,10 @@ public class CollectionUtils {
                 return 1;
             }
 
-            if ( o1.hashCode( ) == o2.hashCode( ) ) return 0;
+            if ( o1.hashCode() == o2.hashCode() ) return 0;
             return (Integer) o1 > (Integer) o2 ? 1 : -1;
         };
-        List<Integer> r = (List<Integer>) range( Arrays.asList( 8, 1, 3, 5, 6, 4 ), 3, 6, comp );
+        List<Integer> r = (List<Integer>) range( Arrays.asList( 8, 1, 3, 5, 6, 4 ), 3, 6/*, comp*/ );
     }
 
     // пример параметризации метода и его реализации:
@@ -92,8 +92,8 @@ public class CollectionUtils {
     //вернуть лист длиной не более size
     public static <T> List<? super T> limit( List<? extends T> source, int size ) {
         if ( source == null ) return null;
-        List<? super T> ret = new ArrayList<>( );
-        for ( int i = 0; i < source.size( ) & i < size; i++ ) {
+        List<? super T> ret = new ArrayList<>();
+        for ( int i = 0; i < source.size() & i < size; i++ ) {
             ret.add( source.get( i ) );
         }
         return ret;
@@ -132,12 +132,12 @@ public class CollectionUtils {
     public static <T extends Comparable<T>> List<? super T> range( List<? extends T> list, T min, T max ) {
         if ( list == null || min == null || max == null ) return null;
 
-        Collections.sort( list );
-        List<? super T> resultList = new ArrayList<>( );
+        List<? super T> resultList = new ArrayList<>();
         for ( T t : list ) {
             if ( t.compareTo( min ) >= 0 && t.compareTo( max ) <= 0 )
                 resultList.add( t );
         }
+        Collections.sort( (List<T>) resultList );
         return resultList;
     }
 
@@ -146,7 +146,7 @@ public class CollectionUtils {
 // Пример range(Arrays.asList(8,1,3,5,6, 4), 3, 6) вернет {3,4,5,6}
     public static <T> List<? super T> range( List<? extends T> list, T min, T max,
                                              Comparator<? super T> comparator ) {
-        List<? super T> resultList = new ArrayList<>( );
+        List<? super T> resultList = new ArrayList<>();
         for ( T t : list ) {
             if ( comparator.compare( t, min ) >= 0 && comparator.compare( t, max ) <= 0 )
                 resultList.add( t );

@@ -19,7 +19,7 @@ public class Counter1DifferentWords {
     }
 
     private static List<String> getWords( String lines ) {
-        return Arrays.asList( lines.toLowerCase( ).split( REGEXP_SPLIT_STRING, -1 ) );
+        return Arrays.asList( lines.toLowerCase().split( REGEXP_SPLIT_STRING, -1 ) );
     }
 
     private static Set<String> getUniqWords( List<String> list ) {
@@ -29,7 +29,7 @@ public class Counter1DifferentWords {
     }
 
     private static void printHeaderString( ) {
-        System.out.println( "--- " + Thread.currentThread( ).getStackTrace( )[2].getMethodName( )
+        System.out.println( "--- " + Thread.currentThread().getStackTrace()[2].getMethodName()
                 + " -----------------------------------------------------------------------" );
     }
 
@@ -38,8 +38,8 @@ public class Counter1DifferentWords {
      */
     public static void printCountWords( String lines ) {
         if ( lines == null ) return;
-        printHeaderString( );
-        System.out.println( "Количество слов в списке: " + getWords( lines ).size( ) );
+        printHeaderString();
+        System.out.println( "Количество слов в списке: " + getWords( lines ).size() );
     }
 
     /**
@@ -48,18 +48,19 @@ public class Counter1DifferentWords {
     public static void printWords( String lines ) {
         if ( lines == null ) return;
         Comparator<String> comparator = ( o1, o2 ) -> {
-            int ret = o1.length( ) > o2.length( ) ? 1 : -1;
+            int ret = o1.length() > o2.length() ? 1 : -1;
             return ret;
         };
 
         TreeSet<String> ts = new TreeSet<>( comparator );
         ts.addAll( getUniqWords( getWords( lines ) ) );
 
-        printHeaderString( );
+        printHeaderString();
         for ( String wo :
                 ts ) {
             System.out.println( wo );
         }
+//        System.arraycopy(  );
     }
 
     /**
@@ -67,15 +68,15 @@ public class Counter1DifferentWords {
      */
     public static void printWordsFrequency( String lines ) {
         if ( lines == null ) return;
-        HashMap<String, Integer> wc = new HashMap<>( );
+        HashMap<String, Integer> wc = new HashMap<>();
         for ( String word : getWords( lines ) ) {
 //            wc.put(word, wc.containsKey(word) ? wc.get(word) + 1 : 1);
             wc.merge( word, 1, Integer::sum );
         }
 
-        printHeaderString( );
-        for ( Map.Entry<String, Integer> pair : wc.entrySet( ) ) {
-            System.out.println( pair.getKey( ) + " " + pair.getValue( ) );
+        printHeaderString();
+        for ( Map.Entry<String, Integer> pair : wc.entrySet() ) {
+            System.out.println( pair.getKey() + " " + pair.getValue() );
         }
     }
 
@@ -88,7 +89,7 @@ public class Counter1DifferentWords {
         List<String> strings = Arrays.asList( lines.split( "\n" ) );
         Collections.reverse( strings );
 
-        printHeaderString( );
+        printHeaderString();
         for ( String s : strings ) {
             System.out.println( s );
         }
@@ -103,11 +104,11 @@ public class Counter1DifferentWords {
 
         public ReverseList( List<T> list ) {
             this.innerlist = list;
-            this.current = list.size( ) - 1;
+            this.current = list.size() - 1;
         }
 
         public Iterator<T> iterator( ) {
-            return new Iterator<T>( ) {
+            return new Iterator<T>() {
                 @Override
                 public boolean hasNext( ) {
                     return -1 < current;
@@ -126,7 +127,7 @@ public class Counter1DifferentWords {
 
         ReverseList<String> rlist = new ReverseList<>( getWords( lines ) );
 
-        printHeaderString( );
+        printHeaderString();
         for ( String s : rlist ) {
             System.out.println( s );
         }
@@ -138,7 +139,7 @@ public class Counter1DifferentWords {
     public static void printSpecificLines( String lines, int[] numLines ) {
         if ( lines == null || numLines == null ) return;
 
-        printHeaderString( );
+        printHeaderString();
         for ( int i :
                 numLines ) {
             System.out.println( getLines( lines ).get( i ) );
@@ -148,7 +149,7 @@ public class Counter1DifferentWords {
     public static void main( String[] args ) throws IOException {
         InputStream resourceAsStream = Counter1DifferentWords.class.getResourceAsStream( "/ru/sbt/collections/VeryBigText.txt" );
         String lines = IOUtils.toString( resourceAsStream, "UTF8" );
-        resourceAsStream.close( );
+        resourceAsStream.close();
 
         printCountWords( lines );
         printWords( lines );
